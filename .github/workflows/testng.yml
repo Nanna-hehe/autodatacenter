@@ -63,18 +63,9 @@ jobs:
       - name: List and Navigate to Reports
         run: |
           cd testng.test
-          echo "Listing root directory:"
-          ls -la
-          echo "Listing target directory:"
           cd target
-          ls -la
-          echo "Listing surefire-reports directory if it exists:"
-          if [ -d "surefire-reports" ]; then
-            cd surefire-reports
-            ls -la
-          else
-            echo "surefire-reports directory does not exist."
-          fi
+          ls
+          cd surefire-reports
       - name: Authenticate and upload test results
         env:
           AGILETEST_BASE_URL: ${{ secrets.AGILETEST_BASE_URL }}
