@@ -62,9 +62,9 @@ jobs:
       # List report files and navigate to surefire-reports
       - name: List and Navigate to Reports
         run: |
-           - ls 
-           - cd target && ls
-           - cd surefire-reports && ls
+          ls 
+          cd target && ls
+          cd surefire-reports && ls
 
       - name: Authenticate and upload test results
         env:
@@ -81,7 +81,7 @@ jobs:
           curl -X POST "${{ secrets.AGILETEST_BASE_URL }}/rest/agiletest/1.0/test-executions/automation/testng?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=TWIN-23&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}"\
             -H "Authorization: Bearer ${{ secrets.AGILETEST_CLIENT_TOKEN }}" \
             -H "Content-Type: application/xml" \
-            --data "@testng-results.xml"
+            --data-binary "@testng-results.xml"
 
       - name: After-Run Script
         env:
