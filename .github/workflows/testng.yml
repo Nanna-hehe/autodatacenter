@@ -62,6 +62,7 @@ jobs:
       # List report files and navigate to surefire-reports
       - name: List and Navigate to Reports
         run: |
+          cd testng.test 
           ls 
           cd target && ls
           cd surefire-reports && ls
