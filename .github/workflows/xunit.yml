@@ -1,4 +1,4 @@
-name: Test Pipeline
+name: xunit
 
 on:
   push:
@@ -51,7 +51,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          
+
       - name: Run NUnit/xUnit tests
         env:
           NODE_OPTIONS: "--max-old-space-size=3072"  # Memory optimization
