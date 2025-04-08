@@ -3,10 +3,10 @@ name: xunit
 on:
   push:
     branches:
-      - junit
+      - xunit
   pull_request:
     branches:
-      - junit
+      - xunit
   workflow_dispatch:
     inputs:
       PROJECT_KEY:
