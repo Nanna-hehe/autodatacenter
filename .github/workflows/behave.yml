@@ -75,10 +75,10 @@ jobs:
           # Authenticate and get the token
           echo "Uploading file to $AGILETEST_BASE_URL"
           echo "Uploading file to ${{ secrets.AGILETEST_BASE_URL }}"
-          curl -X POST "${{ secrets.AGILETEST_BASE_URL }}/rest/agiletest/1.0/test-executions/automation/cucumber?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=TWIN-23&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}"\
+          curl -X POST "${{ secrets.AGILETEST_BASE_URL }}/rest/agiletest/1.0/test-executions/automation/behave?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=TWIN-23&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}"\
             -H "Authorization: Bearer ${{ secrets.AGILETEST_CLIENT_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data @reports/cucumber-report.json
+            --data @reports/behave-report.json
 
       - name: After-Run Script
         env:
