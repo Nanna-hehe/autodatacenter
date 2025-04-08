@@ -47,20 +47,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 20
+          python-version: 3.12
       - name: Run test & generate report
         run: |
-          yarn
-          yarn cucumber-test
+          pip install -r behave/requirements.txt
+          behave behave/features -f json -o reports/behave-report.json
 
       # List report files and navigate to surefire-reports
       - name: Upload report to artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: cucumber-report
+          name: behave-report
           path: reports/
 
       - name: Authenticate and upload test results
