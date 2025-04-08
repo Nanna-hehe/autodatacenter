@@ -63,9 +63,7 @@ jobs:
       - name: List and Navigate to Reports
         run: |
           cd testng.test && ls
-          cd target && ls
-          
-          cd surefire-reports && ls
+
       - name: Authenticate and upload test results
         env:
           AGILETEST_BASE_URL: ${{ secrets.AGILETEST_BASE_URL }}
