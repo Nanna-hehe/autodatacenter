@@ -1,12 +1,12 @@
-name: cucumber
+name: behave
 
 on:
   push:
     branches:
-      - cucumber
+      - behave
   pull_request:
     branches:
-      - cucumber
+      - behave
   workflow_dispatch:
     inputs:
       PROJECT_KEY:
