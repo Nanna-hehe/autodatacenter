@@ -1,0 +1,106 @@
+name: robot2
+
+on:
+  push:
+    branches:
+      - robot2
+  pull_request:
+    branches:
+      - robot2
+  workflow_dispatch:
+    inputs:
+      PROJECT_KEY:
+        description: The key of project
+        type: string
+        required: true # require project key
+      TEST_EXECUTION_KEY:
+        description: The key of test execution
+        type: string
+        required: false # optional test execution key
+      milestoneId:
+        description: The id of milestone
+        type: string
+        required: false
+      testEnvironments:
+        description: The list name of test environments
+        type: string
+        required: false
+      testPlanKeys: 
+        description: The list name of test environments
+        type: string
+        required: false
+      revision: 
+        description: The list name of test environments
+        type: string
+        required: false
+      fixVersions: 
+        description: The list name of test environments
+        type: string
+        required: false      
+      
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          pip install robotframework robotframework-requests robotframework-seleniumlibrary
+
+      # Run Robot Framework tests using the robot.config file
+      - name: Run Robot tests
+        run: |
+          robot -A robot.config
+
+      # List report files and navigate to the reports directory
+      - name: List and Navigate to Reports
+        run: |
+          ls
+          cd reports && ls
+      - name: Authenticate and upload test results
+        env:
+          AGILETEST_BASE_URL: ${{ secrets.AGILETEST_BASE_URL }}
+          AGILETEST_CLIENT_TOKEN: ${{ secrets.AGILETEST_CLIENT_TOKEN }}
+          # TEST_EXECUTION_KEY: ${{ secrets.TEST_EXECUTION_KEY }}
+          PROJECT_KEY: ${{ secrets.PROJECT_KEY }}
+
+        
+        run: |
+          # Authenticate and get the token
+          echo "Uploading file to $AGILETEST_BASE_URL"
+          echo "Uploading file to ${{ secrets.AGILETEST_BASE_URL }}"
+          curl -X POST "${{ secrets.AGILETEST_BASE_URL }}/rest/agiletest/1.0/test-executions/automation/robot?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=TWIN-23&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}"\
+            -H "Authorization: Bearer ${{ secrets.AGILETEST_CLIENT_TOKEN }}" \
+            -H "Content-Type: application/xml" \
+            --data "@reports/robot-report.xml"
+
+      - name: After-Run Script
+        env:
+          AGILETEST_BASE_URL: ${{ secrets.AGILETEST_BASE_URL }}
+          AGILETEST_CLIENT_TOKEN: ${{ secrets.AGILETEST_CLIENT_TOKEN }}
+        if: always() # Ensures this runs regardless of success/failure of previous steps
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            RESULT="success"
+          else
+            RESULT="failed"
+          fi
+
+          curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer ${{ secrets.AGILETEST_CLIENT_TOKEN }}" \
+            --data '{ "repository": "'"${{ github.repository }}"'", "runId": "'"${{ github.run_id }}"'", "tool":"github", "result":"'"$RESULT"'" }' \
+            "${{ secrets.AGILETEST_BASE_URL }}/rest/agiletest/1.0/test-executions/${{ inputs.TEST_EXECUTION_KEY }}/pipeline/history?projectKey=${{ inputs.PROJECT_KEY }}"
+
+      - name: Upload report to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: junit-report
+          path: ./playwright-report/results.xml
