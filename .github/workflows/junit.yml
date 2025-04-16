@@ -77,7 +77,7 @@ jobs:
             RESULT="failed"
           fi
 
-          curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer NTA1ODY4NDIwMzk5OpOKPtGBhCJaGfe4gFkJQBFzNojX \
+          curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer NTA1ODY4NDIwMzk5OpOKPtGBhCJaGfe4gFkJQBFzNojX" \
             --data '{ "repository": "'"${{ github.repository }}"'", "runId": "'"${{ github.run_id }}"'", "tool":"github", "result":"'"$RESULT"'" }' \
             "https://jira4.demo.devsamurai.com/rest/agiletest/1.0/test-executions/${{ inputs.TEST_EXECUTION_KEY }}/pipeline/history?projectKey=${{ inputs.PROJECT_KEY }}"
 
