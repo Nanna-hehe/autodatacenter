@@ -86,6 +86,7 @@ jobs:
         with:
           name: junit-report
           path: ./playwright-report/results.xml
+          
       - name: Echo Run ID and Repository
         run: |
             echo "Run ID: ${{ github.run_id }}"
