@@ -55,7 +55,7 @@ jobs:
         env:
           AGILETEST_BASE_URL: ${{ secrets.AGILETEST_BASE_URL }}
           AGILETEST_CLIENT_TOKEN: ${{ secrets.AGILETEST_CLIENT_TOKEN }}
-          # TEST_EXECUTION_KEY: ${{ secrets.TEST_EXECUTION_KEY }}
+          TEST_EXECUTION_KEY: ${{ secrets.TEST_EXECUTION_KEY }}
           PROJECT_KEY: ${{ secrets.PROJECT_KEY }}
         run: |
           # Authenticate and get the token
