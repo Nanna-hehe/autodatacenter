@@ -77,12 +77,16 @@ jobs:
             RESULT="failed"
           fi
 
-          curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer ${{ secrets.AGILETEST_CLIENT_TOKEN }}" \
+          curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer NTA1ODY4NDIwMzk5OpOKPtGBhCJaGfe4gFkJQBFzNojX \
             --data '{ "repository": "'"${{ github.repository }}"'", "runId": "'"${{ github.run_id }}"'", "tool":"github", "result":"'"$RESULT"'" }' \
-            "${{ secrets.AGILETEST_BASE_URL }}/rest/agiletest/1.0/test-executions/${{ inputs.TEST_EXECUTION_KEY }}/pipeline/history?projectKey=${{ inputs.PROJECT_KEY }}"
+            "https://jira4.demo.devsamurai.com/rest/agiletest/1.0/test-executions/${{ inputs.TEST_EXECUTION_KEY }}/pipeline/history?projectKey=${{ inputs.PROJECT_KEY }}"
 
       - name: Upload report to artifacts
         uses: actions/upload-artifact@v4
         with:
           name: junit-report
           path: ./playwright-report/results.xml
+      - name: Echo Run ID and Repository
+        run: |
+            echo "Run ID: ${{ github.run_id }}"
+            echo "Repository: ${{ github.repository }}"
