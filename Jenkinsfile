@@ -92,7 +92,7 @@ def submitTestResults(token, projectKey) {
 
 def sendBuildStatus(token, status) {
     def response = sh(script: """
-        curl -s -H "Content-Type:application/json" -H "Authorization:JWT $token" \
+        curl -s -H "Content-Type:application/json" -H "Authorization:Bearer $token" \
         --data '{ "buildURL": "'"$env.BUILD_URL"'", "tool":"jenkins-multibranch", "result":"${status}" }' \
         "${env.AGILETEST_BASE_URL}/rest/agiletest/1.0/test-executions/${params.TEST_EXECUTION_KEY}/pipeline/history?projectKey=${params.PROJECT_KEY}"
     """, returnStdout: true).trim()
