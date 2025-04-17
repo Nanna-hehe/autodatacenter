@@ -37,20 +37,24 @@ pipeline {
             }
         }
 
-        stage('API Authentication & Test Result Submission') {
-            steps {
-                script {
-                    def token = authenticateApi()
-                    echo "API Token: ${token}"
-
-                    echo "Project key: $PROJECT_KEY"
-                    echo "Test execution key: $TEST_EXECUTION_KEY"
-
-                    def response = submitTestResults(token)
-                    echo "API Response: ${response}"
-                }
+   post {
+        success {
+            script {
+                echo 'This will run if the build is success.'
+                def token = 'NTkxMDI1NDA5OTAzOvbClbbG1WuosRUr+kpfn/WJo3Q5'
+                sendBuildStatus(token, "success")
             }
         }
+        failure {
+            script {
+                echo 'This will run if the build is failed.'
+                def token = 'NTkxMDI1NDA5OTAzOvbClbbG1WuosRUr+kpfn/WJo3Q5'
+                sendBuildStatus(token, "failed")
+            }
+        }
+    }
+}
+
 
         stage('Finish') {
             steps {
@@ -59,47 +63,23 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            script {
-                echo 'Build succeeded.'
-                def token = authenticateApi()
-                sendBuildStatus(token, "success")
-            }
-        }
-        failure {
-            script {
-                echo 'Build failed.'
-                def token = authenticateApi()
-                sendBuildStatus(token, "failed")
-            }
-        }
-    }
-}
 
-def authenticateApi() {
+def submitTestResults(token, projectKey) {
     return sh(script: """
-        curl -s 'https://agiletest.atlas.devsamurai.com/api/apikeys/authenticate' -X POST -H 'Content-Type:application/json' \
-        --data '{"clientId":"'"$env.CLIENT_ID"'", "clientSecret":"'"$env.CLIENT_SECRET"'"}' \
-        | tr -d '"'
-    """, returnStdout: true).trim()
-}
-
-def submitTestResults(token) {
-    return sh(script: """
-        curl -X POST -H "Content-Type: application/xml" \
-        -H "Authorization: JWT ${token}" \
-        --data @"./playwright-report/results.xml" \
-        "https://api.agiletest.app/ds/test-executions/junit?projectKey=${params.PROJECT_KEY}&testExecutionKey=${params.TEST_EXECUTION_KEY}&milestoneId=${params.milestoneId}&testEnvironments=${params.testEnvironments}&testPlanKeys=${params.testPlanKeys}&revision=${params.revision}&fixVersions=${params.fixVersions}"
+        curl -X POST -H "Content-Type: application/xml" \\
+        -H "Authorization: Bearer ${token}" \\
+        --data @"./playwright-report/results.xml" \\
+        "${env.AGILETEST_BASE_URL}/rest/agiletest/1.0/test-executions/automation/junit?projectKey=${params.PROJECT_KEY}&testExecutionKey=${params.TEST_EXECUTION_KEY}&milestoneId=${params.milestoneId}&testEnvironments=${params.testEnvironments}&testPlanKeys=${params.testPlanKeys}&revision=${params.revision}&fixVersions=${params.fixVersions}"
     """, returnStdout: true).trim()
 }
 
 def sendBuildStatus(token, status) {
     def response = sh(script: """
         curl -s -H "Content-Type:application/json" -H "Authorization:JWT $token" \
-        --data '{ "buildURL": "'"$env.BUILD_URL"'", "tool":"jenkins-multibranch", "result":"${status}" }' \
-        "https://agiletest.atlas.devsamurai.com/ds/test-executions/${params.TEST_EXECUTION_KEY}/pipeline/history?projectKey=${params.PROJECT_KEY}"
+        --data '{ "buildURL": "'"$env.BUILD_URL"'", "tool":"jenkins", "result":"${status}" }' \
+        "${env.AGILETEST_BASE_URL}/rest/agiletest/1.0/test-executions/testExecutionKey=${params.TEST_EXECUTION_KEY}/pipleine/history?/projectKey=${params.PROJECT_KEY}"
     """, returnStdout: true).trim()
 
     echo "API Response for ${status} build: ${response}"
 }
+
