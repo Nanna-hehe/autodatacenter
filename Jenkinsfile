@@ -1,14 +1,13 @@
 pipeline {
     agent any // Use any available agent
-
     parameters {
-        string(name: 'PROJECT_KEY', description: 'Key of the project', defaultValue: 'PAID')
-        string(name: 'TEST_EXECUTION_KEY', description: 'Key of the test execution', defaultValue: 'PAID-21')
-        string(name: 'testEnvironments', description: 'Key of the project', defaultValue: 'T1')
-        string(name: 'milestoneId', description: 'Key of the test execution', defaultValue: '3558')
-        string(name: 'fixVersions', description: 'Key of the project', defaultValue: 'T1')
-        string(name: 'testPlanKeys', description: 'Key of the test execution', defaultValue: 'PAID-11')
-        string(name: 'revision', description: 'Key of the project', defaultValue: '0')        
+        string(name: 'PROJECT_KEY', description: 'Key of the project', defaultValue: '$PROJECT_KEY')
+        string(name: 'TEST_EXECUTION_KEY', description: 'Key of the test execution', defaultValue: '$TEST_EXECUTION_KEY')
+        string(name: 'milestoneId', description: 'Key of the test execution', defaultValue: '$milestoneId')
+        string(name: 'testPlanKeys', description: 'Key of the test execution', defaultValue: '$testPlanKeys')
+        string(name: 'testEnvironments', description: 'Key of the test execution', defaultValue: '$testEnvironments')
+        string(name: 'revision', description: 'Key of the test execution', defaultValue: '$revision')
+        string(name: 'fixVersions', description: 'Key of the test execution', defaultValue: '$fixVersions')
     }
 
     environment {
