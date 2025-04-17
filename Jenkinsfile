@@ -1,5 +1,6 @@
 pipeline {
-    agent any // Use any available agent
+    agent any
+
     parameters {
         string(name: 'PROJECT_KEY', description: 'Key of the project', defaultValue: '$PROJECT_KEY')
         string(name: 'TEST_EXECUTION_KEY', description: 'Key of the test execution', defaultValue: '$TEST_EXECUTION_KEY')
@@ -11,15 +12,15 @@ pipeline {
     }
 
     environment {
-        CLIENT_ID = 'ohuKO8VOiFh/OeeK+qyP6xz/l7z1nivhqrkAA9BvBnI71Lbv30ZrgYM5hf4a+6v+'
-        CLIENT_SECRET = '4e5c99e4b1ac3147d14126967b07a161c1f2756ec27920ea4a9969e95a10acf1'
-        PATH = "/usr/local/bin:${env.PATH}" // Add Node.js to PATH
+        AGILETEST_BASE_URL = 'https://jira4.demo.devsamurai.com'
+        AGILETEST_CLIENT_TOKEN = 'NTA1ODY4NDIwMzk5OpOKPtGBhCJaGfe4gFkJQBFzNojX'
+        PATH = "/usr/local/bin:${env.PATH}"
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                checkout scm
+                git branch: 'junit', url: 'https://github.com/Nanna-hehe/autodatacenter.git', credentialsId: '05f6d992-036c-42c7-ba6f-a91d89e425c9'
             }
         }
 
@@ -27,33 +28,29 @@ pipeline {
             steps {
                 script {
                     echo "Running tests..."
-                    dir('/Users/thuydung/Desktop/github/agiletest') {
-                        sh 'npm ci' // Install dependencies
-                        sh 'npm run' // Run tests
+                    dir('autodatacenter') {
+                        sh 'npm ci'
+                        sh 'npm run' // Replace with actual npm script name if different
                     }
                     echo "Tests completed."
                 }
             }
         }
 
-   post {
-        success {
-            script {
-                echo 'This will run if the build is success.'
-                def token = 'NTkxMDI1NDA5OTAzOvbClbbG1WuosRUr+kpfn/WJo3Q5'
-                sendBuildStatus(token, "success")
-            }
-        }
-        failure {
-            script {
-                echo 'This will run if the build is failed.'
-                def token = 'NTkxMDI1NDA5OTAzOvbClbbG1WuosRUr+kpfn/WJo3Q5'
-                sendBuildStatus(token, "failed")
-            }
-        }
-    }
-}
+        stage('API Authentication & Test Result Submission') {
+            steps {
+                script {
+                    def token = authenticateApi()
+                    echo "API Token: ${token}"
 
+                    echo "Project key: ${params.PROJECT_KEY}"
+                    echo "Test execution key: ${params.TEST_EXECUTION_KEY}"
+
+                    def response = submitTestResults(token, params.PROJECT_KEY)
+                    echo "API Response: ${response}"
+                }
+            }
+        }
 
         stage('Finish') {
             steps {
@@ -62,6 +59,27 @@ pipeline {
         }
     }
 
+    post {
+        success {
+            script {
+                echo 'Build succeeded.'
+                def token = authenticateApi()
+                sendBuildStatus(token, "success")
+            }
+        }
+        failure {
+            script {
+                echo 'Build failed.'
+                def token = authenticateApi()
+                sendBuildStatus(token, "failed")
+            }
+        }
+    }
+}
+
+def authenticateApi() {
+    return "${env.AGILETEST_CLIENT_TOKEN}" // Replace this with real auth logic if needed
+}
 
 def submitTestResults(token, projectKey) {
     return sh(script: """
@@ -81,4 +99,3 @@ def sendBuildStatus(token, status) {
 
     echo "API Response for ${status} build: ${response}"
 }
-
