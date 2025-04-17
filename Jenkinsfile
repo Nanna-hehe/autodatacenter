@@ -94,7 +94,7 @@ def sendBuildStatus(token, status) {
     def response = sh(script: """
         curl -s -H "Content-Type:application/json" -H "Authorization:JWT $token" \
         --data '{ "buildURL": "'"$env.BUILD_URL"'", "tool":"jenkins", "result":"${status}" }' \
-        "${env.AGILETEST_BASE_URL}/rest/agiletest/1.0/test-executions/testExecutionKey=${params.TEST_EXECUTION_KEY}/pipleine/history?/projectKey=${params.PROJECT_KEY}"
+        "${env.AGILETEST_BASE_URL}/rest/agiletest/1.0/test-executions/testExecutionKey=${params.TEST_EXECUTION_KEY}/pipeline/history?/projectKey=${params.PROJECT_KEY}"
     """, returnStdout: true).trim()
 
     echo "API Response for ${status} build: ${response}"
