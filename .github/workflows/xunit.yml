@@ -73,7 +73,7 @@ jobs:
           # Authenticate and get the token
           echo "Uploading file to $AGILETEST_BASE_URL"
           echo "Uploading file to ${{ secrets.AGILETEST_BASE_URL }}"
-          curl -X POST "${{ secrets.AGILETEST_BASE_URL }}/rest/agiletest/1.0/test-executions/automation/xunit?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=TWIN-23&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}"\
+          curl -X POST "${{ secrets.AGILETEST_BASE_URL }}/rest/agiletest/1.0/test-executions/automation/xunit?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=${{ inputs.TEST_EXECUTION_KEY }}&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}"\
             -H "Authorization: Bearer ${{ secrets.AGILETEST_CLIENT_TOKEN }}" \
             -H "Content-Type: application/xml" \
             --data "@xunit.test/TestResults.xml" 
