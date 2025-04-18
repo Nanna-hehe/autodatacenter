@@ -12,8 +12,8 @@ pipeline {
     }
 
     environment {
-        AGILETEST_BASE_URL = 'https://jira3.demo.devsamurai.com'
-        AGILETEST_CLIENT_TOKEN = 'NTg1MjM3OTc1OTgxOreOGl40vMO++nzLk1nYojZiaxzr'
+        AGILETEST_BASE_URL = 'https://jira4.demo.devsamurai.com'
+        AGILETEST_CLIENT_TOKEN = 'NTA1ODY4NDIwMzk5OpOKPtGBhCJaGfe4gFkJQBFzNojX'
         PATH = "/usr/local/bin:${env.PATH}"
     }
 
