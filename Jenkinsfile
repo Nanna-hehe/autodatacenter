@@ -24,17 +24,27 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    echo "Running tests..."
-                    dir('autodatacenter') {
-                        sh 'yarn'
-                        sh 'yarn cucumber-test' // Replace with actual npm script name if different
-                    }
-                    echo "Tests completed."
+stage('Run Tests') {
+    steps {
+        script {
+            echo "Running tests..."
+            dir('autodatacenter') {
+                try {
+                    sh 'yarn'
+                } catch (err) {
+                    error "Yarn install failed: ${err}"
+                }
+
+                try {
+                    sh 'yarn cucumber-test'
+                } catch (err) {
+                    error "Test execution failed: ${err}"
                 }
             }
+            echo "Tests completed."
+        }
+    }
+}
         }
 
     
