@@ -19,7 +19,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 269421208
+              "duration": 229154916
             }
           },
           {
@@ -32,7 +32,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 281457
+              "duration": 166500
             }
           },
           {
@@ -45,7 +45,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 116500
+              "duration": 70625
             }
           },
           {
@@ -87,13 +87,13 @@
             },
             "result": {
               "status": "passed",
-              "duration": 413457
+              "duration": 245792
             }
           }
         ],
         "tags": [
           {
-            "name": "@AUT-671",
+            "name": "@YOIC-5",
             "line": 3
           }
         ],
