@@ -99,5 +99,5 @@ jobs:
       - name: Upload report to artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: junit-report
-          path: ./reports/cucumber-report.json
+          name: behave-report
+          path: ./reports/behave-report.json
