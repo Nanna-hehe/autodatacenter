@@ -61,7 +61,7 @@ jobs:
           echo "Uploading file to $AGILETEST_BASE_URL"
           echo "Uploading file to ${{ secrets.AGILETEST_BASE_URL }}"
           curl -X POST "https://jira2.demo.devsamurai.com/rest/agiletest/1.0/test-executions/automation/junit?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=${{ inputs.TEST_EXECUTION_KEY }}&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}" \
-          -H "Authorization: Bearer NjQzMjk5MTYxMzAwOsGOjc5BqhcYvDxEbxCvBVTL2hwZ" \
+          -H "Authorization: Bearer OTY1OTE2Nzc3NzY2Ou81FtEx+2VavGuxeLtxehtJUm/u" \
           -H "Content-Type: application/xml" \
           --data @"./playwright-report/results.xml"
 
@@ -77,7 +77,7 @@ jobs:
             RESULT="failed"
           fi
 
-          curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer NjQzMjk5MTYxMzAwOsGOjc5BqhcYvDxEbxCvBVTL2hwZ" \
+          curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer OTY1OTE2Nzc3NzY2Ou81FtEx+2VavGuxeLtxehtJUm/u" \
             --data '{ "repository": "'"${{ github.repository }}"'", "runId": "'"${{ github.run_id }}"'", "tool":"github", "result":"'"$RESULT"'" }' \
             "https://jira3.demo.devsamurai.com/rest/agiletest/1.0/test-executions/${{ inputs.TEST_EXECUTION_KEY }}/pipeline/history?projectKey=${{ inputs.PROJECT_KEY }}"
             - name: Echo Run ID and Repository
