@@ -79,7 +79,7 @@ jobs:
 
           curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer NjQzMjk5MTYxMzAwOsGOjc5BqhcYvDxEbxCvBVTL2hwZ" \
             --data '{ "repository": "'"${{ github.repository }}"'", "runId": "'"${{ github.run_id }}"'", "tool":"github", "result":"'"$RESULT"'" }' \
-            "https://jira2.demo.devsamurai.com/rest/agiletest/1.0/test-executions/${{ inputs.TEST_EXECUTION_KEY }}/pipeline/history?projectKey=${{ inputs.PROJECT_KEY }}"
+            "https://jira3.demo.devsamurai.com/rest/agiletest/1.0/test-executions/${{ inputs.TEST_EXECUTION_KEY }}/pipeline/history?projectKey=${{ inputs.PROJECT_KEY }}"
             - name: Echo Run ID and Repository
       - run: |
             echo "Run ID: ${{ github.run_id }}"
