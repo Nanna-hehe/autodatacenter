@@ -60,7 +60,7 @@ jobs:
           # Authenticate and get the token
           echo "Uploading file to $AGILETEST_BASE_URL"
           echo "Uploading file to ${{ secrets.AGILETEST_BASE_URL }}"
-          curl -X POST "https://jira2.demo.devsamurai.com/rest/agiletest/1.0/test-executions/automation/junit?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=${{ inputs.TEST_EXECUTION_KEY }}&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}" \
+          curl -X POST "https://jira3.demo.devsamurai.com/rest/agiletest/1.0/test-executions/automation/junit?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=${{ inputs.TEST_EXECUTION_KEY }}&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}" \
           -H "Authorization: Bearer OTY1OTE2Nzc3NzY2Ou81FtEx+2VavGuxeLtxehtJUm/u" \
           -H "Content-Type: application/xml" \
           --data @"./playwright-report/results.xml"
