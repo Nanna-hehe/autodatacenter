@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'PROJECT_KEY', description: 'Key of the project', defaultValue: '$PROJECT_KEY')
-        string(name: 'TEST_EXECUTION_KEY', description: 'Key of the test execution', defaultValue: '$TEST_EXECUTION_KEY')
-        string(name: 'milestoneId', description: 'Key of the test execution', defaultValue: '$milestoneId')
-        string(name: 'testPlanKeys', description: 'Key of the test execution', defaultValue: '$testPlanKeys')
-        string(name: 'testEnvironments', description: 'Key of the test execution', defaultValue: '$testEnvironments')
-        string(name: 'revision', description: 'Key of the test execution', defaultValue: '$revision')
-        string(name: 'fixVersions', description: 'Key of the test execution', defaultValue: '$fixVersions')
+        string(name: 'PROJECT_KEY', description: 'Key of the project', defaultValue: '')
+        string(name: 'TEST_EXECUTION_KEY', description: 'Key of the test execution', defaultValue: '')
+        string(name: 'milestoneId', description: 'Milestone ID', defaultValue: '')
+        string(name: 'testPlanKeys', description: 'Test Plan Keys', defaultValue: '')
+        string(name: 'testEnvironments', description: 'Test Environments', defaultValue: '')
+        string(name: 'revision', description: 'Revision Identifier', defaultValue: '')
+        string(name: 'fixVersions', description: 'Fix Versions', defaultValue: '')
     }
 
     environment {
@@ -20,7 +20,9 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'cucumber', url: 'https://github.com/Nanna-hehe/autodatacenter.git', credentialsId: '05f6d992-036c-42c7-ba6f-a91d89e425c9'
+                git branch: 'cucumber', 
+                    url: 'https://github.com/Nanna-hehe/autodatacenter.git', 
+                    credentialsId: '05f6d992-036c-42c7-ba6f-a91d89e425c9'
             }
         }
 
@@ -55,7 +57,7 @@ pipeline {
                     echo "Project key: ${params.PROJECT_KEY}"
                     echo "Test execution key: ${params.TEST_EXECUTION_KEY}"
 
-                    def response = submitTestResults(token, params.PROJECT_KEY)
+                    def response = submitTestResults(token)
                     echo "API Response: ${response}"
                 }
             }
@@ -84,4 +86,32 @@ pipeline {
             }
         }
     }
+}
+
+// -----------------------------
+// Utility Functions
+// -----------------------------
+
+def authenticateApi() {
+    return "${env.AGILETEST_CLIENT_TOKEN}" // Optionally replace with real token logic
+}
+
+def submitTestResults(token) {
+    return sh(script: """
+        curl -s -X POST -H "Content-Type: application/xml" \\
+            -H "Authorization: Bearer ${token}" \\
+            --data @reports/cucumber-report.json \\
+            "${env.AGILETEST_BASE_URL}/rest/agiletest/1.0/test-executions/automation/cucumber?projectKey=${params.PROJECT_KEY}&testExecutionKey=${params.TEST_EXECUTION_KEY}&milestoneId=${params.milestoneId}&testEnvironments=${params.testEnvironments}&testPlanKeys=${params.testPlanKeys}&revision=${params.revision}&fixVersions=${params.fixVersions}"
+    """, returnStdout: true).trim()
+}
+
+def sendBuildStatus(token, status) {
+    def response = sh(script: """
+        curl -s -H "Content-Type: application/json" \\
+            -H "Authorization: Bearer ${token}" \\
+            --data '{ "buildURL": "${env.BUILD_URL}", "tool": "jenkins-multibranch", "result": "${status}" }' \\
+            "${env.AGILETEST_BASE_URL}/rest/agiletest/1.0/test-executions/${params.TEST_EXECUTION_KEY}/pipeline/history?projectKey=${params.PROJECT_KEY}"
+    """, returnStdout: true).trim()
+
+    echo "API Response for ${status} build: ${response}"
 }
