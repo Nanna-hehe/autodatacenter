@@ -24,30 +24,28 @@ pipeline {
             }
         }
 
-stage('Run Tests') {
-    steps {
-        script {
-            echo "Running tests..."
-            dir('autodatacenter') {
-                try {
-                    sh 'yarn'
-                } catch (err) {
-                    error "Yarn install failed: ${err}"
-                }
+        stage('Run Tests') {
+            steps {
+                script {
+                    echo "Running tests..."
+                    dir('autodatacenter') {
+                        try {
+                            sh 'yarn'
+                        } catch (err) {
+                            error "Yarn install failed: ${err}"
+                        }
 
-                try {
-                    sh 'yarn cucumber-test'
-                } catch (err) {
-                    error "Test execution failed: ${err}"
+                        try {
+                            sh 'yarn cucumber-test'
+                        } catch (err) {
+                            error "Test execution failed: ${err}"
+                        }
+                    }
+                    echo "Tests completed."
                 }
             }
-            echo "Tests completed."
-        }
-    }
-}
         }
 
-    
         stage('API Authentication & Test Result Submission') {
             steps {
                 script {
@@ -86,27 +84,4 @@ stage('Run Tests') {
             }
         }
     }
-}
-
-def authenticateApi() {
-    return "${env.AGILETEST_CLIENT_TOKEN}" // Replace this with real auth logic if needed
-}
-
-def submitTestResults(token, projectKey) {
-    return sh(script: """
-        curl -X POST -H "Content-Type: application/xml" \\
-        -H "Authorization: Bearer ${token}" \\
-        --data @reports/cucumber-report.json \\
-        "${env.AGILETEST_BASE_URL}/rest/agiletest/1.0/test-executions/automation/cucumber?projectKey=${params.PROJECT_KEY}&testExecutionKey=${params.TEST_EXECUTION_KEY}&milestoneId=${params.milestoneId}&testEnvironments=${params.testEnvironments}&testPlanKeys=${params.testPlanKeys}&revision=${params.revision}&fixVersions=${params.fixVersions}"
-    """, returnStdout: true).trim()
-}
-
-def sendBuildStatus(token, status) {
-    def response = sh(script: """
-        curl -s -H "Content-Type:application/json" -H "Authorization:Bearer $token" \
-        --data '{ "buildURL": "'"$env.BUILD_URL"'", "tool":"jenkins-multibranch", "result":"${status}" }' \
-        "${env.AGILETEST_BASE_URL}/rest/agiletest/1.0/test-executions/${params.TEST_EXECUTION_KEY}/pipeline/history?projectKey=${params.PROJECT_KEY}"
-    """, returnStdout: true).trim()
-
-    echo "API Response for ${status} build: ${response}"
 }
