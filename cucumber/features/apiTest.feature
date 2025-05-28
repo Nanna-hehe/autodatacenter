@@ -1,6 +1,6 @@
 Feature: API Testing
 
-  @SCRUM-356
+  @AUT-73
   Scenario: Fetching a list of posts
     Given I send a GET request to "/posts"
     Then the response status code should be 200
