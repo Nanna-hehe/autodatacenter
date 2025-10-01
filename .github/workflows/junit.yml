@@ -60,8 +60,8 @@ jobs:
           # Authenticate and get the token
           echo "Uploading file to $AGILETEST_BASE_URL"
           echo "Uploading file to ${{ secrets.AGILETEST_BASE_URL }}"
-          curl -X POST "https://jira3.public.dsio.me/rest/agiletest/1.0/test-executions/automation/junit?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=${{ inputs.TEST_EXECUTION_KEY }}&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}" \
-          -H "Authorization: Bearer ODMxMTQzMDc5MzUzOuuABgC6TcCHAkfTQETVBugU5XBi" \
+          curl -X POST "https://jira7.public.dsio.me/rest/agiletest/1.0/test-executions/automation/junit?projectKey=${{ inputs.PROJECT_KEY }}&testExecutionKey=${{ inputs.TEST_EXECUTION_KEY }}&milestoneId=${{ inputs.milestoneId }}&testEnvironments=${{ inputs.testEnvironments }}&testPlanKeys=${{ inputs.testPlanKeys }}&revision=${{ inputs.revision }}&fixVersions=${{ inputs.fixVersions }}" \
+          -H "Authorization: Bearer MDczMjMxNTIzNzMwOkqDQqEDI8Jb3kkKhb5ZRQTw3+f2" \
           -H "Content-Type: application/xml" \
           --data @"./playwright-report/results.xml"
 
@@ -77,9 +77,9 @@ jobs:
             RESULT="failed"
           fi
 
-          curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer ODMxMTQzMDc5MzUzOuuABgC6TcCHAkfTQETVBugU5XBi" \
+          curl -X POST -H "Content-Type: application/json" -H "Authorization:Bearer MDczMjMxNTIzNzMwOkqDQqEDI8Jb3kkKhb5ZRQTw3+f2" \
             --data '{ "repository": "'"${{ github.repository }}"'", "runId": "'"${{ github.run_id }}"'", "tool":"github", "result":"'"$RESULT"'" }' \
-            "https://jira3.public.dsio.me/rest/agiletest/1.0/test-executions/${{ inputs.TEST_EXECUTION_KEY }}/pipeline/history?projectKey=${{ inputs.PROJECT_KEY }}"
+            "https://jira7.public.dsio.me/rest/agiletest/1.0/test-executions/${{ inputs.TEST_EXECUTION_KEY }}/pipeline/history?projectKey=${{ inputs.PROJECT_KEY }}"
             - name: Echo Run ID and Repository
       - run: |
             echo "Run ID: ${{ github.run_id }}"
